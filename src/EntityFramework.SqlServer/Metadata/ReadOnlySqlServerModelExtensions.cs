@@ -68,5 +68,14 @@ namespace Microsoft.Data.Entity.SqlServer.Metadata
             return FindSequence(SqlServerSequenceAnnotation + schema + "." + name)
                    ?? base.TryGetSequence(name, schema);
         }
+
+        public static SqlServerValueGenerationStrategy? GetSqlServerValueGenerationStrategy([NotNull] IProperty property)
+        {
+            Check.NotNull(property, nameof(property));
+
+            return property.SqlServer().ValueGenerationStrategy == SqlServerValueGenerationStrategy.Default
+                ? (property.EntityType.Model.SqlServer().ValueGenerationStrategy ?? SqlServerValueGenerationStrategy.Identity)
+                : property.SqlServer().ValueGenerationStrategy;
+        }
     }
 }
